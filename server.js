@@ -4,7 +4,6 @@ const fs = require('fs');
 const { MongoClient } = require('mongodb');
 const app = express();
 app.use(express.json());
-
 // MongoDB connection
 const url = process.env.MONGO_URL || 'mongodb://admin:password@localhost:27017';
 const client = new MongoClient(url);
