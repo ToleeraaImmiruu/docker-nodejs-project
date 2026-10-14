@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        .container,
+        .container-edit {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            margin: 15px auto;
+        }
+
+        input {
+            width: 95%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        .button {
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .container-edit {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>User Profile</h1>
+
+        <img src="/profile-picture" alt="Profile Picture">
+
+        <p>Name:</p>
+        <h3 id="name">Anna Smith</h3>
+        <hr>
+
+        <p>Email:</p>
+        <h3 id="email">anna.smith@example.com</h3>
+        <hr>
+
+        <p>Interests:</p>
+        <h3 id="interests">coding</h3>
+        <hr>
+
+        <button class="button" onclick="editProfile()">
+            Edit Profile
+        </button>
+    </div>
+
+    <div class="container-edit">
+        <h1>Edit User Profile</h1>
+
+        <img src="/profile-picture" alt="Profile Picture">
+
+        <label for="input-name">Name:</label>
+        <input id="input-name" type="text">
+
+        <hr>
+
+        <label for="input-email">Email:</label>
+        <input id="input-email" type="email">
+
+        <hr>
+
+        <label for="input-interests">Interests:</label>
+        <input id="input-interests" type="text">
+
+        <hr>
+
+        <button class="button" onclick="saveProfile()">
+            Save Profile
+        </button>
+    </div>
+
+    <script>
+        console.log('NEW SCRIPT LOADED');
+
+        // Load the saved profile when the page opens
+        async function loadProfile() {
+            try {
+                console.log('Loading profile from database...');
+                const res = await fetch('/get-profile');
+                const data = await res.json();
+                console.log('Profile from database:', data);
+
+                if (data.name) document.getElementById('name').textContent = data.name;
+                if (data.email) document.getElementById('email').textContent = data.email;
+                if (data.interests) document.getElementById('interests').textContent = data.interests;
+            } catch (err) {
+                console.error('Could not load profile', err);
+            }
+        }
+
+        function editProfile() {
+            console.log('Edit button clicked');
+
+            document.querySelector('.container').style.display = 'none';
+            document.querySelector('.container-edit').style.display = 'block';
+
+            document.getElementById('input-name').value =
+                document.getElementById('name').textContent;
+            document.getElementById('input-email').value =
+                document.getElementById('email').textContent;
+            document.getElementById('input-interests').value =
+                document.getElementById('interests').textContent;
+        }
+
+        async function saveProfile() {
+            const name = document.getElementById('input-name').value;
+            const email = document.getElementById('input-email').value;
+            const interests = document.getElementById('input-interests').value;
+
+            console.log('1. Save button clicked');
+            console.log('2. Sending data:', { name, email, interests });
+
+            try {
+                const res = await fetch('/update-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, interests })
+                });
+
+                console.log('3. Server status:', res.status);
+
+                const data = await res.json();
+                console.log('4. Server response:', data);
+
+                if (!res.ok) {
+                    console.error('5. Save FAILED');
+                    alert('Save failed: ' + JSON.stringify(data));
+                    return;
+                }
+
+                console.log('5. Save SUCCESS, data is in MongoDB');
+            } catch (err) {
+                console.error('Save error:', err);
+                alert('Save error: ' + err.message);
+                return;
+            }
+
+            document.getElementById('name').textContent = name;
+            document.getElementById('email').textContent = email;
+            document.getElementById('interests').textContent = interests;
+
+            document.querySelector('.container-edit').style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+        }
+
+        loadProfile();
+    </script>
+
+</body>
+</html>
