@@ -20,7 +20,6 @@ app.get('/profile-picture', function (req, res) {
     res.writeHead(200, { 'Content-Type': 'image/png' });
     res.end(img);
 });
-
 // Get the profile from the database
 app.get('/get-profile', async function (req, res) {
     try {
