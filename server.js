@@ -13,7 +13,6 @@ let users; // will hold the "users" collection
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
-
 app.get('/profile-picture', function (req, res) {
     const img = fs.readFileSync(path.join(__dirname, 'image.png'));
     res.writeHead(200, { 'Content-Type': 'image/png' });
