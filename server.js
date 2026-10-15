@@ -10,7 +10,6 @@ const client = new MongoClient(url);
 const dbName = 'user-account';
 
 let users; // will hold the "users" collection
-
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
