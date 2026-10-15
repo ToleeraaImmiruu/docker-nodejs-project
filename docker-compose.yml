@@ -27,7 +27,6 @@ services:
       mongodb:
         condition: service_healthy
     restart: unless-stopped
-
   app:
     build: .
     container_name: user-profile-app
